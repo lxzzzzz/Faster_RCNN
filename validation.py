@@ -11,9 +11,9 @@ from tqdm import tqdm
 import numpy as np
 
 import transforms
-from network_files import FasterRCNN
-from backbone import resnet50_fpn_backbone
-from my_dataset import VOCDataSet
+from nets.framework import FasterRCNN
+from backbones.resnet50_fpn_model import resnet50_fpn_backbone
+from my_dataset import my_dataset
 from train_utils import get_coco_api_from_dataset, CocoEvaluator
 
 
@@ -109,22 +109,22 @@ def main(parser_data):
     print("Using {} device training.".format(device.type))
 
     data_transform = {
-        "val": transforms.Compose([transforms.ToTensor()]),
-        "test": transforms.Compose([transforms.ToTensor()])
+        "val": transforms.Compose([transforms.To_tensor()]),
+        "test": transforms.Compose([transforms.To_tensor()])
     }
 
     # read class_indict
-    label_json_path = './pascal_voc_classes.json'
+    label_json_path = './my_classes.json'
     assert os.path.exists(label_json_path), "json file {} dose not exist.".format(label_json_path)
     with open(label_json_path, 'r') as f:
         class_dict = json.load(f)
 
     category_index = {v: k for k, v in class_dict.items()}
 
-    VOC_root = parser_data.data_path
-    # check voc root
-    if os.path.exists(os.path.join(VOC_root, "VOCdevkit")) is False:
-        raise FileNotFoundError("VOCdevkit dose not in path:'{}'.".format(VOC_root))
+    # VOC_root = parser_data.data_path
+    # # check voc root
+    # if os.path.exists(os.path.join(VOC_root, "VOCdevkit")) is False:
+    #     raise FileNotFoundError("VOCdevkit dose not in path:'{}'.".format(VOC_root))
 
     # 注意这里的collate_fn是自定义的，因为读取的数据包括image和targets，不能直接使用默认的方法合成batch
     batch_size = parser_data.batch_size
@@ -132,13 +132,17 @@ def main(parser_data):
     print('Using %g dataloader workers' % nw)
 
     # load validation data set
-    val_dataset = VOCDataSet(VOC_root, "2007", data_transform["val"], "val.txt")
+    val_dataset = my_dataset(data_path="D:/VSCode_item/image_detection/Faster_RCNN/VOCdevkit/VOC2007/ImageSets/main/val.txt",
+    xml_path="D:/vehicle_data/VOCdevkit/VOC2007/Annotations", 
+    json_path="D:/VSCode_item/image_detection/Faster_RCNN/my_classes.json",
+    image_path="D:/vehicle_data/VOCdevkit/VOC2007/JPEGImages", transforms=data_transform["val"])
+    
     val_dataset_loader = torch.utils.data.DataLoader(val_dataset,
                                                      batch_size=4,
                                                      shuffle=False,
                                                      num_workers=nw,
                                                      pin_memory=True,
-                                                     collate_fn=val_dataset.collate_fn)
+                                                     collate_fn=val_dataset.my_collate)
 
     # create model num_classes equal background + 20 classes
     # 注意，这里的norm_layer要和训练脚本中保持一致

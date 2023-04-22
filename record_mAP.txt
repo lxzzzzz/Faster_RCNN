@@ -1,0 +1,11 @@
+COCO results:
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets= 10 ] = 0.990
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets= 10 ] = 0.968
+ Average Recall     (AR) @[ IoU=0.75      | area=   all | maxDets= 10 ] = 0.979
+ Average Recall     (AR) @[ IoU=0.75      | area=   all | maxDets= 10 ] = 0.978
+
+mAP(IoU=0.5) for each category:
+ vehicle        @[iou=0.5]@[all]@[10]_Ap: 0.9900189806891612
+ vehicle        @[iou=0.75]@[all]@[10]_Ap: 0.9681066118652559
+ vehicle        @[iou=0.75]@[score>=0.70]@[all]@[10]_precision: 0.9791332263242376
+ vehicle        @[iou=0.75]@[score>=0.70]@[all]@[10]_recall: 0.9775641025641025
