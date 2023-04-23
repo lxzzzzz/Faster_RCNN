@@ -147,7 +147,7 @@ class Transforms_Img_Tar(nn.Module):
             return detections
         for i, (j, k, l) in enumerate(zip(detections, list_images_size, original_image_sizes)):
             bbox = j["boxes"]
-            
+            # 错误3: ratios_x 计算中，除数与被除数设置反了
             ratios_height = torch.tensor(original_image_sizes[0][0], dtype=torch.float32, device=bbox.device) / torch.tensor(list_images_size[0][0], dtype=torch.float32, device=bbox.device)
             ratios_width = torch.tensor(original_image_sizes[0][1], dtype=torch.float32, device=bbox.device) / torch.tensor(list_images_size[0][1], dtype=torch.float32, device=bbox.device)
             

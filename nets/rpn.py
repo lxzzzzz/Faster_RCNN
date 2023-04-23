@@ -365,7 +365,7 @@ class RPN(nn.Module):
             A4 = bbox_pred.shape[1]
             A = A4 // 4
             C = AC // A
-
+            # 错误1: reshape(N, A, C, -1).permute(...)
             cls_prob = cls_prob.view(N, -1, C, H, W).permute(0, 3, 4, 1, 2).reshape(N, -1, C)
             bbox_pred = bbox_pred.view(N, -1, C, H, W).permute(0, 3, 4, 1, 2).reshape(N, -1, 4)
             cls_prob_list[index] = cls_prob

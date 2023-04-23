@@ -15,6 +15,7 @@ class BalancedPositiveNegativeSampler(object):
         neg_index = []
         for label in labels:
             # 正样本的索引
+            # 错误2: positive = torch.where(torch.eq(label, 1.0))[0]
             positive = torch.where(torch.ge(label, 1.0))[0]
             # 负样本的索引
             negative = torch.where(torch.eq(label, 0.0))[0]
@@ -84,9 +85,9 @@ class BoxCoder(object):
         xmax = pred_x + 0.5 * pred_w
         ymax = pred_y + 0.5 * pred_h
         # 合并
-        # 注意: 这里reshape(xmin.shape[0], -1)代替flatten(1)第一个维度为0会报错
+        # 错误4: 这里reshape(xmin.shape[0], -1)代替flatten(1)第一个维度为0会报错
         pred_box = torch.stack((xmin, ymin, xmax, ymax), dim=2).flatten(1)
-        # 防止pred_boxes为空时导致reshape报错
+        # 错误4: 防止pred_boxes为空时导致reshape报错
         if xmin.shape[0] > 0:
             return pred_box.reshape(xmin.shape[0], -1, 4)
         else:

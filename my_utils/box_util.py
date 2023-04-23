@@ -7,6 +7,7 @@ def clip_boxes_to_image(proposals_per_image, list_images_size_per_image):
     """
         调整超出边界的框, 将超出坐调整到边界位置
     """
+    # 错误5: 切片, satck使用错误
     # 注意: 由于rpn中也会使用，与roi中维度不同，所以不能直接设置为定值
     dim = proposals_per_image.dim()
 
